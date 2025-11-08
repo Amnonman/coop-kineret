@@ -30,7 +30,7 @@ jobs:
             echo "Missing one of GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET / GOOGLE_REFRESH_TOKEN secrets."
             exit 1
           fi
-          cat > ~/.clasprc.json <<'JSON'
+          cat > ~/.clasprc.json <<EOF
           {
             "token": {
               "access_token": "",
@@ -46,11 +46,7 @@ jobs:
             },
             "isLocalCreds": false
           }
-          JSON
-          # interpolate env vars into the JSON
-          sed -i "s|\\${GOOGLE_REFRESH_TOKEN}|${GOOGLE_REFRESH_TOKEN}|g" ~/.clasprc.json
-          sed -i "s|\\${GOOGLE_CLIENT_ID}|${GOOGLE_CLIENT_ID}|g" ~/.clasprc.json
-          sed -i "s|\\${GOOGLE_CLIENT_SECRET}|${GOOGLE_CLIENT_SECRET}|g" ~/.clasprc.json
+          EOF
           echo "Created ~/.clasprc.json"
 
       - name: Write .clasp.json from secret SCRIPT_ID
