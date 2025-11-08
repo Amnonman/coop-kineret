@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>שלב ההרשמה</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 680px; margin: 24px auto; line-height: 1.6; }
+    input, button { padding: 10px; width: 100%; margin: 8px 0; }
+    .muted { color:#666; font-size:0.95em; }
+  </style>
+  <base target="_top">
+  <meta http-equiv="Content-Security-Policy" content="script-src 'unsafe-inline' 'self' https://ssl.gstatic.com https://www.gstatic.com; object-src 'none'">
+  <script>
+    function submitReg(){
+      document.getElementById('msg').textContent = 'תודה! הפרטים התקבלו.';
+    }
+  </script>
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+  <h2>ברוכים הבאים לשלב ההרשמה</h2>
+  <p>הגעתם לכאן כי עברתם את החידון. נא למלא פרטים ונחזור אליכם.</p>
+  <label>שם מלא:<br/><input type="text" id="name" required></label>
+  <label>אימייל:<br/><input type="email" id="email" required></label>
+  <label>טלפון:<br/><input type="tel" id="phone" required></label>
+  <button onclick="submitReg()">שליחה</button>
+  <div id="msg" class="muted"></div>
+</body>
+</html>
+
+

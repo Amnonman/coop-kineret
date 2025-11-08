@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>חידון קואופ כינרת</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 680px; margin: 24px auto; line-height: 1.6; }
+    .q { margin: 14px 0; }
+    button { padding: 10px 16px; cursor: pointer; }
+    .hint { color: #666; font-size: 0.9em; }
+    .topnav { margin-bottom: 12px; }
+    .topnav a { color:#1a73e8; text-decoration:none; }
+  </style>
+  <base target="_top">
+  <meta http-equiv="Content-Security-Policy" content="script-src 'unsafe-inline' 'self' https://ssl.gstatic.com https://www.gstatic.com; object-src 'none'">
+</head>
+<body>
+  <div class="topnav"><a href="?p=welcome">חזרה לעמוד פתיחה</a></div>
+  <h2>חידון התאמה קצר</h2>
+  <p class="hint">נדרש ציון מעבר כדי להמשיך לשלב ההרשמה.</p>
+  <label>אימייל (לא חובה, לצורך סיכום):<br/>
+    <input id="email" type="email" style="width:100%" placeholder="you@example.com"/>
+  </label>
+  <div class="q">
+    <strong>1) כמה לילות שימוש שנתיים מקבלים?</strong><br/>
+    <label><input type="radio" name="q1" value="A" required> 5</label><br/>
+    <label><input type="radio" name="q1" value="B"> 7</label><br/>
+    <label><input type="radio" name="q1" value="C"> 10</label>
+  </div>
+  <div class="q">
+    <strong>2) מהי עלות ההצטרפות המשוערת?</strong><br/>
+    <label><input type="radio" name="q2" value="A" required> 20,000 ₪</label><br/>
+    <label><input type="radio" name="q2" value="B"> 40,000 ₪</label><br/>
+    <label><input type="radio" name="q2" value="C"> 80,000 ₪</label>
+  </div>
+  <div class="q">
+    <strong>3) היעד למספר החברים הוא:</strong><br/>
+    <label><input type="radio" name="q3" value="A" required> 1,200</label><br/>
+    <label><input type="radio" name="q3" value="B"> 2,000</label><br/>
+    <label><input type="radio" name="q3" value="C"> 3,200</label>
+  </div>
+  <div class="q">
+    <strong>4) התמחור לשימוש מוצג לפי:</strong><br/>
+    <label><input type="radio" name="q4" value="A" required> לילה</label><br/>
+    <label><input type="radio" name="q4" value="B"> שבוע</label><br/>
+    <label><input type="radio" name="q4" value="C"> חודש</label>
+  </div>
+  <div class="q">
+    <strong>5) נתון נוסף:</strong><br/>
+    <label><input type="radio" name="q5" value="A" required> A</label><br/>
+    <label><input type="radio" name="q5" value="B"> B</label><br/>
+    <label><input type="radio" name="q5" value="C"> C</label>
+  </div>
+  <button id="submitBtn">בדיקה</button>
+  <div id="msg"></div>
+  <script>
+    const $ = (s)=>document.querySelector(s);
+    const getVal = (n)=> (document.querySelector('input[name="'+n+'"]:checked')||{}).value || null;
+    document.getElementById('submitBtn').addEventListener('click', function() {
+      const answers = [ getVal('q1'), getVal('q2'), getVal('q3'), getVal('q4'), getVal('q5') ];
+      if (answers.some(function(v){ return v === null; })) { document.getElementById('msg').textContent = 'אנא השלם/י את כל השאלות.'; return; }
+      const payload = { email: (document.getElementById('email').value || ''), answers: answers };
+      google.script.run.withSuccessHandler(function(res) {
+        if (!res || res.pass === false) {
+          document.getElementById('msg').textContent = 'לא עברת (ציון: ' + ((res && res.score) || 0) + '). אפשר לנסות שוב.';
+        } else {
+          var url = new URL(window.location.href);
+          url.search = '?p=register&token=' + encodeURIComponent(res.token);
+          window.location.href = url.toString();
+        }
+      }).withFailureHandler(function(err) {
+        document.getElementById('msg').textContent = 'שגיאה: ' + err.message;
+      }).grade(payload);
+    });
+  </script>
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+</body>
+</html>
+
+

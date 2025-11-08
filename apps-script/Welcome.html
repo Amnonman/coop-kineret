@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ברוכים הבאים — קואופ כינרת</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 28px auto; line-height: 1.7; }
+    h1 { margin-bottom: 0.2em; }
+    .lead { color:#555; }
+    .box { background:#f7f7f7; border-radius:12px; padding:16px 18px; margin:16px 0; }
+    button { padding:12px 18px; border:0; border-radius:10px; cursor:pointer; }
+    .primary { background:#1a73e8; color:#fff; font-weight:600; }
+    .muted { color:#666; font-size:0.95em; }
+    ul { margin:0.5em 0 1.2em; }
+  </style>
+  <base target="_top">
+  <meta http-equiv="Content-Security-Policy" content="script-src 'unsafe-inline' 'self' https://ssl.gstatic.com https://www.gstatic.com; object-src 'none'">
+  <script>
+    function go(){
+      var url = new URL(window.location.href);
+      url.search = '?p=quiz';
+      window.location.href = url.toString();
+    }
+  </script>
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+  <h1>קואופ כינרת — הצטרפות קהילתית</h1>
+  <p class="lead">בונים יחד מלון קהילתי על חוף הכנרת. לפני ההרשמה יש חידון קצר כדי לוודא התאמה והבנה של העקרונות.</p>
+  <div class="box">
+    <strong>העיקריים בקצרה:</strong>
+    <ul>
+      <li>עלות הצטרפות משוערת: כ־40,000 ₪.</li>
+      <li>שימוש: 7 לילות בשנה.</li>
+      <li>תמחור לפי שבוע.</li>
+      <li>יעד גיוס: 3,200 חברים.</li>
+    </ul>
+    <p class="muted">מיד אחרי החידון (אם עוברים את הסף) תגיעו לשלב מילוי הפרטים.</p>
+  </div>
+  <button class="primary" onclick="go()">התחילו את החידון</button>
+  <p class="muted">משך החידון: כ־2 דקות. כל השאלות חובה.</p>
+</body>
+</html>
+
+
