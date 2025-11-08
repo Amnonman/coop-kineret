@@ -1,0 +1,87 @@
+name: Deploy Apps Script
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install clasp
+        run: npm i -g @google/clasp
+
+      - name: Configure OAuth tokens for clasp
+        env:
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+        run: |
+          if [ -z "${GOOGLE_CLIENT_ID}" ] || [ -z "${GOOGLE_CLIENT_SECRET}" ] || [ -z "${GOOGLE_REFRESH_TOKEN}" ]; then
+            echo "Missing one of GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET / GOOGLE_REFRESH_TOKEN secrets."
+            exit 1
+          fi
+          cat > ~/.clasprc.json <<'JSON'
+          {
+            "token": {
+              "access_token": "",
+              "refresh_token": "${GOOGLE_REFRESH_TOKEN}",
+              "scope": "https://www.googleapis.com/auth/script.deployments https://www.googleapis.com/auth/script.projects https://www.googleapis.com/auth/drive",
+              "token_type": "Bearer",
+              "expiry_date": 0
+            },
+            "oauth2ClientSettings": {
+              "clientId": "${GOOGLE_CLIENT_ID}",
+              "clientSecret": "${GOOGLE_CLIENT_SECRET}",
+              "redirectUri": "http://localhost"
+            },
+            "isLocalCreds": false
+          }
+          JSON
+          # interpolate env vars into the JSON
+          sed -i "s|\\${GOOGLE_REFRESH_TOKEN}|${GOOGLE_REFRESH_TOKEN}|g" ~/.clasprc.json
+          sed -i "s|\\${GOOGLE_CLIENT_ID}|${GOOGLE_CLIENT_ID}|g" ~/.clasprc.json
+          sed -i "s|\\${GOOGLE_CLIENT_SECRET}|${GOOGLE_CLIENT_SECRET}|g" ~/.clasprc.json
+          echo "Created ~/.clasprc.json"
+
+      - name: Write .clasp.json from secret SCRIPT_ID
+        env:
+          GAS_SCRIPT_ID: ${{ secrets.GAS_SCRIPT_ID }}
+        run: |
+          if [ -z "${GAS_SCRIPT_ID}" ]; then
+            echo "Missing GAS_SCRIPT_ID secret."
+            exit 1
+          fi
+          cat > .clasp.json <<JSON
+          {
+            "scriptId": "${GAS_SCRIPT_ID}",
+            "rootDir": "apps-script"
+          }
+          JSON
+          cat .clasp.json
+
+      - name: Push source to Apps Script
+        run: |
+          clasp push -f
+
+      - name: Deploy web app (update existing deployment)
+        env:
+          GAS_DEPLOYMENT_ID: ${{ secrets.GAS_DEPLOYMENT_ID }}
+        run: |
+          if [ -z "${GAS_DEPLOYMENT_ID}" ]; then
+            echo "GAS_DEPLOYMENT_ID not provided; creating a new deployment."
+            clasp deploy -d "CI deploy $(git rev-parse --short HEAD)"
+          else
+            clasp deploy -i "${GAS_DEPLOYMENT_ID}" -d "CI deploy $(git rev-parse --short HEAD)"
+          fi
+
+

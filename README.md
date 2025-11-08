@@ -13,6 +13,8 @@ All storage is in Google Sheets (tab `Responses`).
 - `apps-script/Index.html` — quiz UI
 - `apps-script/Register.html` — gated registration page
 - `apps-script/appsscript.json` — Apps Script manifest
+- `.clasp.json` — clasp config (script binding)
+- `.github/workflows/deploy-apps-script.yml` — CI workflow to deploy on push
 
 ## Setup
 1) Create a Google Sheet and copy its ID (the string between `/d/` and `/edit` in the URL).
@@ -52,5 +54,32 @@ Run `gradeDryRun` once from the Apps Script editor (Run → `gradeDryRun`) and a
 ## Notes
 - The register page is token-gated via `CacheService`; tokens expire after 15 minutes and are consumed on first use.
 - Add headers to the `Responses` sheet (optional): `Timestamp | Email | Score | AnswersJSON`.
+
+## CI deploy (GitHub Actions)
+This repo includes a workflow that deploys to Google Apps Script whenever you push to `main`.
+
+Secrets required in the GitHub repo (Settings → Secrets and variables → Actions):
+- `GOOGLE_CLIENT_ID` — From your Google Cloud OAuth credentials
+- `GOOGLE_CLIENT_SECRET` — From your Google Cloud OAuth credentials
+- `GOOGLE_REFRESH_TOKEN` — Your refresh token (from a `clasp login` you did locally)
+- `GAS_SCRIPT_ID` — Apps Script Project Script ID (from the Script Editor: Project Settings → Script ID)
+- `GAS_DEPLOYMENT_ID` (optional) — Existing Web App deployment ID to update. If omitted, the workflow will create a new deployment each run.
+
+How to obtain a refresh token:
+1. Install clasp locally: `npm i -g @google/clasp`
+2. In this repo root, run: `clasp login` and complete the OAuth flow
+3. Open `~/.clasprc.json` and copy `oauth2ClientSettings.clientId`, `oauth2ClientSettings.clientSecret`, and `token.refresh_token` into the GitHub secrets above.
+
+How it works:
+- The workflow writes `~/.clasprc.json` from the provided secrets
+- It writes `.clasp.json` from `GAS_SCRIPT_ID`
+- Runs `clasp push -f` to upload sources from `apps-script/`
+- Runs `clasp deploy`:
+  - If `GAS_DEPLOYMENT_ID` is set: updates that deployment
+  - Otherwise: creates a new deployment
+
+Important:
+- Make sure your Apps Script project is a standalone project (not only container-bound) and you have permissions to deploy Web Apps.
+- After the first deploy, in the Script Editor → Deployments, set the Web App access (“Execute as” and “Who has access”) as needed.
 
 
