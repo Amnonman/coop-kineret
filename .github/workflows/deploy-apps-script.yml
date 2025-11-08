@@ -68,6 +68,17 @@ jobs:
           }
           JSON
           cat .clasp.json
+      - name: Inject SHEET_ID from secret (optional)
+        env:
+          GAS_SHEET_ID: ${{ secrets.GAS_SHEET_ID }}
+        run: |
+          if [ -n "${GAS_SHEET_ID}" ]; then
+            echo "Injecting SHEET_ID into apps-script/Code.gs from GAS_SHEET_ID secret"
+            sed -i "s|const SHEET_ID = 'PUT_SHEET_ID_HERE';|const SHEET_ID = '${GAS_SHEET_ID}';|g" apps-script/Code.gs
+            grep -n "SHEET_ID" apps-script/Code.gs || true
+          else
+            echo "GAS_SHEET_ID not set; using repository value in Code.gs"
+          fi
 
       - name: Push source to Apps Script
         run: |

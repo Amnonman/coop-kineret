@@ -21,6 +21,7 @@ All storage is in Google Sheets (tab `Responses`).
 2) In `apps-script/Code.gs`, set:
    - `SHEET_ID = 'YOUR_SHEET_ID'`
    - Update `ANSWERS` and `PASS_THRESHOLD` as needed.
+   - Alternatively (recommended for CI), set repo secret `GAS_SHEET_ID` and the workflow will inject it at build time.
 
 ## Deploy to Apps Script
 Two options:
@@ -64,6 +65,7 @@ Secrets required in the GitHub repo (Settings → Secrets and variables → Acti
 - `GOOGLE_REFRESH_TOKEN` — Your refresh token (from a `clasp login` you did locally)
 - `GAS_SCRIPT_ID` — Apps Script Project Script ID (from the Script Editor: Project Settings → Script ID)
 - `GAS_DEPLOYMENT_ID` (optional) — Existing Web App deployment ID to update. If omitted, the workflow will create a new deployment each run.
+- `GAS_SHEET_ID` (optional) — If set, CI injects this into `Code.gs` instead of the placeholder `PUT_SHEET_ID_HERE`.
 
 How to obtain a refresh token:
 1. Install clasp locally: `npm i -g @google/clasp`
@@ -77,6 +79,7 @@ How it works:
 - Runs `clasp deploy`:
   - If `GAS_DEPLOYMENT_ID` is set: updates that deployment
   - Otherwise: creates a new deployment
+- If `GAS_SHEET_ID` is set: replaces `const SHEET_ID = 'PUT_SHEET_ID_HERE';` in `apps-script/Code.gs` before pushing.
 
 Important:
 - Make sure your Apps Script project is a standalone project (not only container-bound) and you have permissions to deploy Web Apps.
