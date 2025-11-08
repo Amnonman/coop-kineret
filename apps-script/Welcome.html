@@ -16,13 +16,6 @@
   </style>
   <base target="_top">
   <meta http-equiv="Content-Security-Policy" content="script-src 'unsafe-inline' 'self' https://ssl.gstatic.com https://www.gstatic.com; object-src 'none'">
-  <script>
-    function go(){
-      var url = new URL(window.location.href);
-      url.search = '?p=quiz';
-      window.location.href = url.toString();
-    }
-  </script>
   <script src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
@@ -38,8 +31,20 @@
     </ul>
     <p class="muted">מיד אחרי החידון (אם עוברים את הסף) תגיעו לשלב מילוי הפרטים.</p>
   </div>
-  <button class="primary" onclick="go()">התחילו את החידון</button>
+  <button id="startBtn" class="primary">התחילו את החידון</button>
   <p class="muted">משך החידון: כ־2 דקות. כל השאלות חובה.</p>
+  <script>
+    (function attachStartHandler(){
+      var btn = document.getElementById('startBtn');
+      if (!btn) return;
+      btn.addEventListener('click', function(){
+        var url = new URL(window.location.href);
+        url.search = '?p=quiz';
+        // ensure navigation happens at the top frame
+        window.top.location.href = url.toString();
+      });
+    })();
+  </script>
 </body>
 </html>
 
