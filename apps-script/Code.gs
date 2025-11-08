@@ -1,7 +1,8 @@
-const SHEET_ID = 'PUT_SHEET_ID_HERE';
+const SHEET_ID = '1BliQQUida5bLLJjmEBRvWKpr8MKHtmF2KKezbuxBiIg'; // Spreadsheet ID
 const ANSWERS = ['B','C','A','B','C'];
 const PASS_THRESHOLD = 4;
 const TOKEN_TTL_SECONDS = 15 * 60;
+const APP_VERSION = 'v1.1.0'; // update when sources change
 
 function doGet(e) {
   const p = (e && e.parameter && e.parameter.p) || 'welcome';
@@ -11,12 +12,18 @@ function doGet(e) {
       return HtmlService.createHtmlOutput('<h3>Access denied. Please complete the quiz first.</h3><a href="?p=quiz">Back to quiz</a>');
     }
     consumeToken(token);
-    return HtmlService.createTemplateFromFile('Register').evaluate().setTitle('Registration');
+    const t = HtmlService.createTemplateFromFile('Register');
+    t.appVersion = APP_VERSION;
+    return t.evaluate().setTitle('Registration');
   }
   if (p === 'quiz') {
-    return HtmlService.createTemplateFromFile('Index').evaluate().setTitle('Quiz');
+    const t = HtmlService.createTemplateFromFile('Index');
+    t.appVersion = APP_VERSION;
+    return t.evaluate().setTitle('Quiz');
   }
-  return HtmlService.createTemplateFromFile('Welcome').evaluate().setTitle('Welcome');
+  const t = HtmlService.createTemplateFromFile('Welcome');
+  t.appVersion = APP_VERSION;
+  return t.evaluate().setTitle('Welcome');
 }
 
 function include(filename) {

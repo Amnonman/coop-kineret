@@ -9,7 +9,7 @@
     h1 { margin-bottom: 0.2em; }
     .lead { color:#555; }
     .box { background:#f7f7f7; border-radius:12px; padding:16px 18px; margin:16px 0; }
-    button { padding:12px 18px; border:0; border-radius:10px; cursor:pointer; }
+    button, .btn { padding:12px 18px; border:0; border-radius:10px; cursor:pointer; display:inline-block; text-decoration:none; }
     .primary { background:#1a73e8; color:#fff; font-weight:600; }
     .muted { color:#666; font-size:0.95em; }
     ul { margin:0.5em 0 1.2em; }
@@ -20,6 +20,7 @@
 </head>
 <body>
   <h1>קואופ כינרת — הצטרפות קהילתית</h1>
+  <div class="muted" style="text-align:right">גרסה: <?= appVersion ?></div>
   <p class="lead">בונים יחד מלון קהילתי על חוף הכנרת. לפני ההרשמה יש חידון קצר כדי לוודא התאמה והבנה של העקרונות.</p>
   <div class="box">
     <strong>העיקריים בקצרה:</strong>
@@ -31,20 +32,9 @@
     </ul>
     <p class="muted">מיד אחרי החידון (אם עוברים את הסף) תגיעו לשלב מילוי הפרטים.</p>
   </div>
-  <button id="startBtn" class="primary">התחילו את החידון</button>
+  <a href="?p=quiz" class="primary btn">התחילו את החידון</a>
   <p class="muted">משך החידון: כ־2 דקות. כל השאלות חובה.</p>
-  <script>
-    (function attachStartHandler(){
-      var btn = document.getElementById('startBtn');
-      if (!btn) return;
-      btn.addEventListener('click', function(){
-        var url = new URL(window.location.href);
-        url.search = '?p=quiz';
-        // ensure navigation happens at the top frame
-        window.top.location.href = url.toString();
-      });
-    })();
-  </script>
+
 </body>
 </html>
 
