@@ -2,7 +2,7 @@ const SHEET_ID = '1BliQQUida5bLLJjmEBRvWKpr8MKHtmF2KKezbuxBiIg'; // Spreadsheet 
 const ANSWERS = ['B','C','A','B','C'];
 const PASS_THRESHOLD = 4;
 const TOKEN_TTL_SECONDS = 15 * 60;
-const APP_VERSION = 'v1.1.0'; // update when sources change
+const APP_VERSION = 'v1.1.2'; // update when sources change
 
 function doGet(e) {
   const p = (e && e.parameter && e.parameter.p) || 'welcome';
