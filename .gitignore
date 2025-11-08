@@ -1,0 +1,17 @@
+# Editors / IDE
+.cursor/
+.vscode/
+.idea/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependencies / env
+node_modules/
+venv/
+.env
+.env.*
+
+
