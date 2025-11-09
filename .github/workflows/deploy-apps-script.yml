@@ -82,8 +82,12 @@ jobs:
         run: |
           if [ -n "${GAS_BACKGROUND_URL}" ]; then
             echo "Injecting BACKGROUND_URL into apps-script/Code.gs from GAS_BACKGROUND_URL secret"
-            sed -i "s|const BACKGROUND_URL = 'PUT_BACKGROUND_IMAGE_URL_HERE';|const BACKGROUND_URL = '${GAS_BACKGROUND_URL}';|g" apps-script/Code.gs
-            grep -n "BACKGROUND_URL" apps-script/Code.gs || true
+            # Escape '&' for sed replacement
+            SAFE_URL="${GAS_BACKGROUND_URL//&/\\&}"
+            # Replace whatever is on the right-hand side to make this robust
+            sed -i "s|^const BACKGROUND_URL = .*|const BACKGROUND_URL = '${SAFE_URL}';|g" apps-script/Code.gs
+            echo "Resolved BACKGROUND_URL line:"
+            nl -ba apps-script/Code.gs | sed -n '1,20p' | grep -n \"BACKGROUND_URL\" || true
           else
             echo "GAS_BACKGROUND_URL not set; using repository value in Code.gs (fallback gradient will be used)."
           fi
