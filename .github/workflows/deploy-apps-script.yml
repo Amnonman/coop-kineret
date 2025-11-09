@@ -143,6 +143,7 @@ jobs:
 
       - name: Enforce Web App only (remove API Executable facet)
         if: ${{ success() }}
+        continue-on-error: true
         env:
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
