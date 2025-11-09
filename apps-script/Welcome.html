@@ -5,7 +5,21 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>ברוכים הבאים — קואופ כינרת (<?!= appVersion ?>)</title>
   <style>
-    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 28px auto; line-height: 1.7; }
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 720px;
+      margin: 28px auto;
+      line-height: 1.7;
+      min-height: 100vh;
+      background: #f6f7fb url('<?!= backgroundUrl ?>') center/cover no-repeat fixed;
+    }
+    .surface {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(2px);
+      border-radius: 14px;
+      padding: 18px 20px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
     h1 { margin-bottom: 0.2em; }
     .lead { color:#555; }
     .box { background:#f7f7f7; border-radius:12px; padding:16px 18px; margin:16px 0; }
@@ -18,21 +32,23 @@
   <script src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
-  <h1>קואופ כינרת — הצטרפות קהילתית</h1>
-  <div class="muted" style="text-align:right">גרסה: <?!= appVersion ?> | build: <?!= buildStamp ?></div>
-  <p class="lead">בונים יחד מלון קהילתי על חוף הכנרת. לפני ההרשמה יש חידון קצר כדי לוודא התאמה והבנה של העקרונות.</p>
-  <div class="box">
-    <strong>העיקריים בקצרה:</strong>
-    <ul>
-      <li>עלות הצטרפות משוערת: כ־40,000 ₪.</li>
-      <li>שימוש: 7 לילות בשנה.</li>
-      <li>תמחור לפי שבוע.</li>
-      <li>יעד גיוס: 3,200 חברים.</li>
-    </ul>
-    <p class="muted">מיד אחרי החידון (אם עוברים את הסף) תגיעו לשלב מילוי הפרטים.</p>
+  <div class="surface">
+    <h1>קואופ כינרת — הצטרפות קהילתית</h1>
+    <div class="muted" style="text-align:right">גרסה: <?!= appVersion ?> | build: <?!= buildStamp ?></div>
+    <p class="lead">בונים יחד מלון קהילתי על חוף הכנרת. לפני ההרשמה יש חידון קצר כדי לוודא התאמה והבנה של העקרונות.</p>
+    <div class="box">
+      <strong>העיקריים בקצרה:</strong>
+      <ul>
+        <li>עלות הצטרפות משוערת: כ־40,000 ₪.</li>
+        <li>שימוש: 7 לילות בשנה.</li>
+        <li>תמחור לפי שבוע.</li>
+        <li>יעד גיוס: 3,200 חברים.</li>
+      </ul>
+      <p class="muted">מיד אחרי החידון (אם עוברים את הסף) תגיעו לשלב מילוי הפרטים.</p>
+    </div>
+    <a href="<?!= baseUrl ?>?p=quiz" class="primary btn">התחילו את החידון</a>
+    <p class="muted">משך החידון: כ־2 דקות. כל השאלות חובה.</p>
   </div>
-  <a href="<?!= baseUrl ?>?p=quiz" class="primary btn">התחילו את החידון</a>
-  <p class="muted">משך החידון: כ־2 דקות. כל השאלות חובה.</p>
 
 </body>
 </html>

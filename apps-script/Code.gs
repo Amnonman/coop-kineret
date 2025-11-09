@@ -2,8 +2,10 @@ const SHEET_ID = '1BliQQUida5bLLJjmEBRvWKpr8MKHtmF2KKezbuxBiIg'; // Spreadsheet 
 const ANSWERS = ['B','C','A','B','C'];
 const PASS_THRESHOLD = 4;
 const TOKEN_TTL_SECONDS = 15 * 60;
-const APP_VERSION = 'v1.1.4'; // update when sources change
+const APP_VERSION = 'v1.2.0'; // update when sources change
 const BUILD_STAMP = Utilities.formatDate(new Date(), 'Asia/Jerusalem', 'yyyy-MM-dd HH:mm:ss');
+// Optional page background. Put a publicly accessible image URL here.
+const BACKGROUND_URL = 'PUT_BACKGROUND_IMAGE_URL_HERE';
 
 function doGet(e) {
   const p = (e && e.parameter && e.parameter.p) || 'welcome';
@@ -18,6 +20,7 @@ function doGet(e) {
     t.appVersion = APP_VERSION;
     t.buildStamp = BUILD_STAMP;
     t.baseUrl = baseUrl;
+    t.backgroundUrl = BACKGROUND_URL;
     return t.evaluate().setTitle('Registration');
   }
   if (p === 'quiz') {
@@ -25,12 +28,14 @@ function doGet(e) {
     t.appVersion = APP_VERSION;
     t.buildStamp = BUILD_STAMP;
     t.baseUrl = baseUrl;
+    t.backgroundUrl = BACKGROUND_URL;
     return t.evaluate().setTitle('Quiz');
   }
   const t = HtmlService.createTemplateFromFile('Welcome');
   t.appVersion = APP_VERSION;
   t.buildStamp = BUILD_STAMP;
   t.baseUrl = baseUrl;
+  t.backgroundUrl = BACKGROUND_URL;
   return t.evaluate().setTitle('Welcome');
 }
 

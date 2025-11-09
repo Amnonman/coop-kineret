@@ -5,7 +5,21 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>שלב ההרשמה (<?!= appVersion ?>)</title>
   <style>
-    body { font-family: system-ui, sans-serif; max-width: 680px; margin: 24px auto; line-height: 1.6; }
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 680px;
+      margin: 24px auto;
+      line-height: 1.6;
+      min-height: 100vh;
+      background: #f6f7fb url('<?!= backgroundUrl ?>') center/cover no-repeat fixed;
+    }
+    .surface {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(2px);
+      border-radius: 14px;
+      padding: 18px 20px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
     input, button { padding: 10px; width: 100%; margin: 8px 0; }
     .muted { color:#666; font-size:0.95em; }
   </style>
@@ -19,14 +33,16 @@
   <script src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
-  <h2>ברוכים הבאים לשלב ההרשמה</h2>
-  <p class="muted" style="text-align:right">גרסה: <?!= appVersion ?> | build: <?!= buildStamp ?></p>
-  <p>הגעתם לכאן כי עברתם את החידון. נא למלא פרטים ונחזור אליכם.</p>
-  <label>שם מלא:<br/><input type="text" id="name" required></label>
-  <label>אימייל:<br/><input type="email" id="email" required></label>
-  <label>טלפון:<br/><input type="tel" id="phone" required></label>
-  <button onclick="submitReg()">שליחה</button>
-  <div id="msg" class="muted"></div>
+  <div class="surface">
+    <h2>ברוכים הבאים לשלב ההרשמה</h2>
+    <p class="muted" style="text-align:right">גרסה: <?!= appVersion ?> | build: <?!= buildStamp ?></p>
+    <p>הגעתם לכאן כי עברתם את החידון. נא למלא פרטים ונחזור אליכם.</p>
+    <label>שם מלא:<br/><input type="text" id="name" required></label>
+    <label>אימייל:<br/><input type="email" id="email" required></label>
+    <label>טלפון:<br/><input type="tel" id="phone" required></label>
+    <button onclick="submitReg()">שליחה</button>
+    <div id="msg" class="muted"></div>
+  </div>
 </body>
 </html>
 
