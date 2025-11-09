@@ -93,11 +93,22 @@ jobs:
             AKfy*) echo "Using Web App deployment: ${GAS_DEPLOYMENT_ID}" ;;
             *) echo "ERROR: GAS_DEPLOYMENT_ID does not look like a Web App id (should start with AKfy)."; exit 1 ;;
           esac
+          # Print a short suffix (not masked) for human verification across steps
+          DEP_ID_LAST8="${GAS_DEPLOYMENT_ID:${#GAS_DEPLOYMENT_ID}-8}"
+          echo "Target Web App deployment (last8): ${DEP_ID_LAST8}"
+          echo "DEP_ID_LAST8=${DEP_ID_LAST8}" >> "$GITHUB_ENV"
           clasp deploy -i "${GAS_DEPLOYMENT_ID}" -d "CI deploy $(git rev-parse --short HEAD)"
 
       - name: Show deployments (for debugging)
+        env:
+          DEP_ID_LAST8: ${{ env.DEP_ID_LAST8 }}
         run: |
           echo "Listing deployments after CI deploy:"
           clasp deployments
+          if [ -n "${DEP_ID_LAST8}" ]; then
+            echo ""
+            echo "Looking for the target deployment by last8 (${DEP_ID_LAST8}):"
+            clasp deployments | grep -n "${DEP_ID_LAST8}" || true
+          fi
 
 
