@@ -109,7 +109,18 @@ jobs:
           DEP_ID_LAST8="${GAS_DEPLOYMENT_ID:${#GAS_DEPLOYMENT_ID}-8}"
           echo "Target Web App deployment (last8): ${DEP_ID_LAST8}"
           echo "DEP_ID_LAST8=${DEP_ID_LAST8}" >> "$GITHUB_ENV"
-          clasp deploy -i "${GAS_DEPLOYMENT_ID}" -d "CI deploy $(git rev-parse --short HEAD)"
+          
+          # Create a new script version explicitly and capture its number
+          NEW_VER_RAW="$(clasp version "CI $(git rev-parse --short HEAD)")"
+          echo "${NEW_VER_RAW}"
+          NEW_VER="$(echo "${NEW_VER_RAW}" | grep -Eo '[0-9]+' | tail -1)"
+          if [ -z "${NEW_VER}" ]; then
+            echo "ERROR: Could not detect new Apps Script version number."
+            exit 1
+          fi
+          echo "New Apps Script version: ${NEW_VER}"
+          # Update the existing Web App deployment to point to the new version
+          clasp deploy -i "${GAS_DEPLOYMENT_ID}" -V "${NEW_VER}" -d "CI deploy $(git rev-parse --short HEAD)"
 
       - name: Show deployments (for debugging)
         env:
