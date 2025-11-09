@@ -2,7 +2,7 @@ const SHEET_ID = '1BliQQUida5bLLJjmEBRvWKpr8MKHtmF2KKezbuxBiIg'; // Spreadsheet 
 const ANSWERS = ['B','C','A','B','C'];
 const PASS_THRESHOLD = 4;
 const TOKEN_TTL_SECONDS = 15 * 60;
-const APP_VERSION = 'v1.2.1'; // update when sources change
+const APP_VERSION = 'v1.2.2'; // update when sources change
 const BUILD_STAMP = Utilities.formatDate(new Date(), 'Asia/Jerusalem', 'yyyy-MM-dd HH:mm:ss');
 // Optional page background. Put a publicly accessible image URL here.
 const BACKGROUND_URL = 'PUT_BACKGROUND_IMAGE_URL_HERE';
