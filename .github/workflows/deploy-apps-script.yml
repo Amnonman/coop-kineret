@@ -85,10 +85,19 @@ jobs:
           GAS_DEPLOYMENT_ID: ${{ secrets.GAS_DEPLOYMENT_ID }}
         run: |
           if [ -z "${GAS_DEPLOYMENT_ID}" ]; then
-            echo "GAS_DEPLOYMENT_ID not provided; creating a new deployment."
-            clasp deploy -d "CI deploy $(git rev-parse --short HEAD)"
-          else
-            clasp deploy -i "${GAS_DEPLOYMENT_ID}" -d "CI deploy $(git rev-parse --short HEAD)"
+            echo "ERROR: GAS_DEPLOYMENT_ID secret is required and must be the Web app Deployment ID (AKfy...)."
+            exit 1
           fi
+          # Sanity check: looks like a Web App id (starts with AKfy)
+          case "${GAS_DEPLOYMENT_ID}" in
+            AKfy*) echo "Using Web App deployment: ${GAS_DEPLOYMENT_ID}" ;;
+            *) echo "ERROR: GAS_DEPLOYMENT_ID does not look like a Web App id (should start with AKfy)."; exit 1 ;;
+          esac
+          clasp deploy -i "${GAS_DEPLOYMENT_ID}" -d "CI deploy $(git rev-parse --short HEAD)"
+
+      - name: Show deployments (for debugging)
+        run: |
+          echo "Listing deployments after CI deploy:"
+          clasp deployments
 
 
