@@ -166,23 +166,7 @@ jobs:
           fi
           echo "Patching deployment to WEB_APP only (version ${NEW_VER})..."
           PATCH_URL="https://script.googleapis.com/v1/projects/${SCRIPT_ID}/deployments/${GAS_DEPLOYMENT_ID}?updateMask=deploymentConfig.entryPoints,deploymentConfig.versionNumber"
-          BODY="$(cat <<JSON
-          {
-            "deploymentConfig": {
-              "versionNumber": ${NEW_VER},
-              "entryPoints": [
-                {
-                  "entryPointType": "WEB_APP",
-                  "webApp": {
-                    "access": "ANYONE",
-                    "executeAs": "USER_DEPLOYING"
-                  }
-                }
-              ]
-            }
-          }
-JSON
-          )"
+          BODY="{\"deploymentConfig\":{\"versionNumber\":${NEW_VER},\"entryPoints\":[{\"entryPointType\":\"WEB_APP\",\"webApp\":{\"access\":\"ANYONE\",\"executeAs\":\"USER_DEPLOYING\"}}]}}"
           echo "${BODY}" | jq .
           curl -s -X PATCH "${PATCH_URL}" \
             -H "Authorization: Bearer ${ACCESS_TOKEN}" \
