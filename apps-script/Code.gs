@@ -2,11 +2,12 @@ const SHEET_ID = '1BliQQUida5bLLJjmEBRvWKpr8MKHtmF2KKezbuxBiIg'; // Spreadsheet 
 const ANSWERS = ['B','C','A','B','C'];
 const PASS_THRESHOLD = 4;
 const TOKEN_TTL_SECONDS = 15 * 60;
-const APP_VERSION = 'v1.1.3'; // update when sources change
+const APP_VERSION = 'v1.1.4'; // update when sources change
 const BUILD_STAMP = Utilities.formatDate(new Date(), 'Asia/Jerusalem', 'yyyy-MM-dd HH:mm:ss');
 
 function doGet(e) {
   const p = (e && e.parameter && e.parameter.p) || 'welcome';
+  const baseUrl = ScriptApp.getService().getUrl();
   if (p === 'register') {
     const token = e.parameter.token || '';
     if (!validateToken(token)) {
@@ -16,17 +17,20 @@ function doGet(e) {
     const t = HtmlService.createTemplateFromFile('Register');
     t.appVersion = APP_VERSION;
     t.buildStamp = BUILD_STAMP;
+    t.baseUrl = baseUrl;
     return t.evaluate().setTitle('Registration');
   }
   if (p === 'quiz') {
     const t = HtmlService.createTemplateFromFile('Index');
     t.appVersion = APP_VERSION;
     t.buildStamp = BUILD_STAMP;
+    t.baseUrl = baseUrl;
     return t.evaluate().setTitle('Quiz');
   }
   const t = HtmlService.createTemplateFromFile('Welcome');
   t.appVersion = APP_VERSION;
   t.buildStamp = BUILD_STAMP;
+  t.baseUrl = baseUrl;
   return t.evaluate().setTitle('Welcome');
 }
 
