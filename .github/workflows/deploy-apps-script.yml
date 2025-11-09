@@ -95,8 +95,9 @@ jobs:
       - name: Push source to Apps Script
         run: |
           clasp push -f
-
+      # Only attempt deploy if all previous steps succeeded
       - name: Deploy web app (update existing deployment)
+        if: ${{ success() }}
         env:
           GAS_DEPLOYMENT_ID: ${{ secrets.GAS_DEPLOYMENT_ID }}
         run: |
@@ -127,6 +128,7 @@ jobs:
           clasp deploy -i "${GAS_DEPLOYMENT_ID}" -V "${NEW_VER}" -d "CI deploy $(git rev-parse --short HEAD)"
 
       - name: Show deployments (for debugging)
+        if: ${{ success() }}
         env:
           DEP_ID_LAST8: ${{ env.DEP_ID_LAST8 }}
         run: |
