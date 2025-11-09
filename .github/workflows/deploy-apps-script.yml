@@ -124,6 +124,7 @@ jobs:
             exit 1
           fi
           echo "New Apps Script version: ${NEW_VER}"
+          echo "NEW_VER=${NEW_VER}" >> "$GITHUB_ENV"
           # Update the existing Web App deployment to point to the new version
           clasp deploy -i "${GAS_DEPLOYMENT_ID}" -V "${NEW_VER}" -d "CI deploy $(git rev-parse --short HEAD)"
 
@@ -139,5 +140,53 @@ jobs:
             echo "Looking for the target deployment by last8 (${DEP_ID_LAST8}):"
             clasp deployments | grep -n "${DEP_ID_LAST8}" || true
           fi
+
+      - name: Enforce Web App only (remove API Executable facet)
+        if: ${{ success() }}
+        env:
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+          GAS_DEPLOYMENT_ID: ${{ secrets.GAS_DEPLOYMENT_ID }}
+          NEW_VER: ${{ env.NEW_VER }}
+        run: |
+          set -e
+          # Parse scriptId from .clasp.json
+          SCRIPT_ID="$(grep -oE '\"scriptId\" *: *\"[^\"]+\"' .clasp.json | sed 's/.*: *\"//; s/\"$//')"
+          echo "SCRIPT_ID: ${SCRIPT_ID}"
+          sudo apt-get update -y && sudo apt-get install -y jq >/dev/null
+          ACCESS_TOKEN="$(curl -s -X POST https://oauth2.googleapis.com/token \
+            -d client_id="${GOOGLE_CLIENT_ID}" \
+            -d client_secret="${GOOGLE_CLIENT_SECRET}" \
+            -d refresh_token="${GOOGLE_REFRESH_TOKEN}" \
+            -d grant_type=refresh_token | jq -r '.access_token')"
+          if [ -z "${ACCESS_TOKEN}" ] || [ "${ACCESS_TOKEN}" = "null" ]; then
+            echo "ERROR: Failed to obtain access token"
+            exit 1
+          fi
+          echo "Patching deployment to WEB_APP only (version ${NEW_VER})..."
+          PATCH_URL="https://script.googleapis.com/v1/projects/${SCRIPT_ID}/deployments/${GAS_DEPLOYMENT_ID}?updateMask=deploymentConfig.entryPoints,deploymentConfig.versionNumber"
+          BODY="$(cat <<JSON
+          {
+            "deploymentConfig": {
+              "versionNumber": ${NEW_VER},
+              "entryPoints": [
+                {
+                  "entryPointType": "WEB_APP",
+                  "webApp": {
+                    "access": "ANYONE",
+                    "executeAs": "USER_DEPLOYING"
+                  }
+                }
+              ]
+            }
+          }
+JSON
+          )"
+          echo "${BODY}" | jq .
+          curl -s -X PATCH "${PATCH_URL}" \
+            -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d "${BODY}" | jq .
 
 
