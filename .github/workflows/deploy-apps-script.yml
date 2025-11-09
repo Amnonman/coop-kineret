@@ -76,6 +76,18 @@ jobs:
             echo "GAS_SHEET_ID not set; using repository value in Code.gs"
           fi
 
+      - name: Inject BACKGROUND_URL from secret (optional)
+        env:
+          GAS_BACKGROUND_URL: ${{ secrets.GAS_BACKGROUND_URL }}
+        run: |
+          if [ -n "${GAS_BACKGROUND_URL}" ]; then
+            echo "Injecting BACKGROUND_URL into apps-script/Code.gs from GAS_BACKGROUND_URL secret"
+            sed -i "s|const BACKGROUND_URL = 'PUT_BACKGROUND_IMAGE_URL_HERE';|const BACKGROUND_URL = '${GAS_BACKGROUND_URL}';|g" apps-script/Code.gs
+            grep -n "BACKGROUND_URL" apps-script/Code.gs || true
+          else
+            echo "GAS_BACKGROUND_URL not set; using repository value in Code.gs (fallback gradient will be used)."
+          fi
+
       - name: Push source to Apps Script
         run: |
           clasp push -f
